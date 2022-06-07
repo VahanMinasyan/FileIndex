@@ -31,7 +31,7 @@ namespace FileIndex
             if (args.Length != 1)
                 throw new Exception("FileIndex requires 1 argument, which should be a valid path.");
             if (!Directory.Exists(args[0]))
-                throw new Exception("Directory with provided path doesn't exist, please provide valid path.");
+                throw new Exception($"Directory with provided path: {args[0]} doesn't exist, please provide valid path.");
 
             return true;
         }

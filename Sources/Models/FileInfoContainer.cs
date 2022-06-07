@@ -20,29 +20,18 @@ namespace FileIndex.Models
                 return FileInfos.SelectMany(x=>x.IdenticalFiles).Select(x=>x.ID).Distinct().Count();
             }
         }
+        public string SizeOfIdenticalFiles
+        {
+            get
+            {
+                return GetFormattedSize(FileInfos.SelectMany(x => x.IdenticalFiles).Sum(x=>x.Size));
+            }
+        }
+
         public string Size { 
             get 
             {
-                string sufix = "Bytes";
-                decimal factor = 1;
-
-                if (_totalSizeinBytes >= 1024 * 1024 * 1024)
-                {
-                    sufix = "GB";
-                    factor = 1024 * 1024 * 1024;
-                }
-                if (_totalSizeinBytes >= 1024 * 1024)
-                {
-                    factor = 1024 * 1024;
-                    sufix = "MB";
-                }
-                if (_totalSizeinBytes >= 1024)
-                {
-                    factor = 1024;
-                    sufix = "KB";
-                }
-
-                return $"{Math.Round(_totalSizeinBytes / factor,1)} {sufix}"; 
+                return GetFormattedSize(_totalSizeinBytes);
             } 
             set 
             {
@@ -52,5 +41,29 @@ namespace FileIndex.Models
         public string sourcePath;
 
         private decimal _totalSizeinBytes;
+
+        private string GetFormattedSize(decimal sizeInBytes)
+        {
+            string sufix = DataSizeSufix.Bytes;
+            decimal factor = 1;
+
+            if (sizeInBytes >= 1024 * 1024 * 1024)
+            {
+                sufix = DataSizeSufix.GB;
+                factor = 1024 * 1024 * 1024;
+            }
+            else if (sizeInBytes >= 1024 * 1024)
+            {
+                sufix = DataSizeSufix.MB;
+                factor = 1024 * 1024;
+            }
+            else if (sizeInBytes >= 1024)
+            {
+                sufix = DataSizeSufix.KB;
+                factor = 1024;
+            }
+
+            return $"{Math.Round(sizeInBytes / factor, 1)} {sufix}";
+        }
     }
 }

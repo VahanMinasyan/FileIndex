@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileIndex.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,12 +22,12 @@ namespace FileIndex
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            // Load files
+            // Load file metadata
             var fileInfoContainer = _fileLoader.LoadFileInfos(path);
 
 
             // Identify identical files
-            Parallel.ForEach(fileInfoContainer.FileInfos, new ParallelOptions { MaxDegreeOfParallelism = 10 }, fileInfo =>
+            Parallel.ForEach(fileInfoContainer.FileInfos, new ParallelOptions { MaxDegreeOfParallelism = Configs.MaxNumberOfThreads }, fileInfo =>
             {
                 GetIdenticalFiles(fileInfo, fileInfoContainer.FileInfos);
             });
@@ -56,7 +57,7 @@ namespace FileIndex
                     }
                 }
 
-                Console.WriteLine($"Total {fileInfoContainer.QtyIdenticalFiles} identical files (105MB) found ({watch.Elapsed.TotalSeconds}s elapsed).");
+                Console.WriteLine($"Total {fileInfoContainer.QtyIdenticalFiles} identical files ({fileInfoContainer.SizeOfIdenticalFiles}) found ({watch.Elapsed.TotalSeconds}s elapsed).");
 
             }
             else
@@ -65,7 +66,7 @@ namespace FileIndex
             watch.Stop();
         }
 
-        public List<FileInfo> GetIdenticalFiles(FileInfo fileInfo, List<FileInfo> fileInfos)
+        private List<FileInfo> GetIdenticalFiles(FileInfo fileInfo, List<FileInfo> fileInfos)
         {
             // Alow only one thread at a time to treat this fileInfo as source, i.e. other threads could use it as destination  
 
@@ -88,7 +89,7 @@ namespace FileIndex
             {
                 if (fileInfoDestination.State != FileState.IsProcessed && fileInfoDestination.ID != fileInfo.ID)
                 {
-                    _fileComparer.FilesAreIdentical(fileInfo, fileInfoDestination);
+                    _fileComparer.MarkFilesIfIdentical(fileInfo, fileInfoDestination);
                 }
             }
 
