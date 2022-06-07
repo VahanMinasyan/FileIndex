@@ -31,8 +31,7 @@ namespace FileIndex.Implementations
                    });
             }
 
-            // TODO move logic to getter
-            fileInfoContainer.Size = $"{(totalFileSizeBytes / 1024 / 1024 / 1024)} GB";
+            fileInfoContainer.Size = $"{totalFileSizeBytes}";
             return fileInfoContainer;
         }
     }
