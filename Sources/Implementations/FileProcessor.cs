@@ -41,14 +41,14 @@ namespace FileIndex
 
                 foreach (var fileInfo in fileInfoContainer.FileInfos)
                 {
-                    if (fileInfo.State != FileState.IncludedInSummary && fileInfo.State == FileState.IsProcessed)
+                    if (fileInfo.State == FileState.IsProcessed)
                     {
                         if (!fileInfo.IdenticalFiles.Any())
                             continue;
 
                         // Update IncludedInSummary of identicals as well not to include them in summary any more 
                         fileInfo.IdenticalFiles.Select(x => x.State = FileState.IncludedInSummary).ToList();
-                        fileInfo.State = FileState.IncludedInSummary;
+                        fileInfo.State = FileState.MarkedAsPrimary;
 
                         Console.WriteLine($"{fileInfo.Size} - {fileInfo.FilePath}");
 

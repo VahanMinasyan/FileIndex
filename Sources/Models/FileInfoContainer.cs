@@ -17,14 +17,14 @@ namespace FileIndex.Models
         {
             get
             {
-                return FileInfos.SelectMany(x=>x.IdenticalFiles).Select(x=>x.ID).Distinct().Count();
+                return FileInfos.Where(x => x.State == FileState.MarkedAsPrimary).Count();
             }
         }
         public string SizeOfIdenticalFiles
         {
             get
             {
-                return GetFormattedSize(FileInfos.SelectMany(x => x.IdenticalFiles).Sum(x=>x.Size));
+                return GetFormattedSize(FileInfos.Where(x => x.State == FileState.MarkedAsPrimary).Sum(x=>x.Size));
             }
         }
 
