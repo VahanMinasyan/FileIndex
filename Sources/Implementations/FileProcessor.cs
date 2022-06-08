@@ -1,4 +1,5 @@
-﻿using FileIndex.Models;
+﻿using FileIndex.Implementations;
+using FileIndex.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,7 +51,7 @@ namespace FileIndex
                         fileInfo.IdenticalFiles.Select(x => x.State = FileState.IncludedInSummary).ToList();
                         fileInfo.State = FileState.MarkedAsPrimary;
 
-                        Console.WriteLine($"{fileInfo.Size} - {fileInfo.FilePath}");
+                        Console.WriteLine($"{SizeFormatHelper.GetFormattedSize(fileInfo.Size)} - {fileInfo.FilePath}");
 
                         foreach (var identicalFileInfo in fileInfo.IdenticalFiles)
                             Console.WriteLine($"    {identicalFileInfo.FilePath}");
